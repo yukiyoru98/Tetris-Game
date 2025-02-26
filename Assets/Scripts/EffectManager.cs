@@ -1,26 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectManager : MonoBehaviour
+public sealed class EffectManager : Singleton<EffectManager>
 {
-	// Singletone
-	private static EffectManager instance;
-	public static EffectManager Instance
-	{
-		get { return instance; }
-		private set { instance = value; }
-	}
-	private void Awake()
-	{
-		if (Instance != null && Instance != this)
-		{
-			Debug.LogError("Duplicated Singleton.");
-			Destroy(Instance);
-			return;
-		}
-		Instance = this;
+	[SerializeField] private GameObject HitEffect;
+    [SerializeField] private GameObject KillLineEffect;
 
+    private ObjectPool hitEffectPool;
+    private ObjectPool killLineEffectPool;
+
+	protected override void Awake()
+	{
+		base.Awake();
 		Initialize();
 	}
 
@@ -29,12 +20,6 @@ public class EffectManager : MonoBehaviour
 		hitEffectPool = new ObjectPool(HitEffect, 5);
 		killLineEffectPool = new ObjectPool(KillLineEffect, 4);
 	}
-
-	[SerializeField] private GameObject HitEffect;
-    [SerializeField] private GameObject KillLineEffect;
-
-    private ObjectPool hitEffectPool;
-    private ObjectPool killLineEffectPool;
 
     public void ShowHitEffect(Vector3 pos)
     {

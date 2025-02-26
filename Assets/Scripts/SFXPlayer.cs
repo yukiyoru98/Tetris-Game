@@ -1,34 +1,19 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SFXPlayer : MonoBehaviour
+public sealed class SFXPlayer : Singleton<SFXPlayer>
 {
-    private static SFXPlayer instance;
-    public static SFXPlayer Instance
-    {
-        get { return instance; }
-        private set { instance = value; }
-    }
-
-	private void Awake()
-    {
-		if (Instance != null && Instance != this)
-		{
-			Debug.LogError("Duplicated Singleton.");
-			Destroy(Instance);
-			return;
-		}
-		Instance = this;
-		Initialize();
-
-	}
-
     [SerializeField] private AudioClip[] Clips;
 	[SerializeField] private GameObject SoundPrefab;
 
     private Dictionary<string, AudioClip> clipDictionary = new Dictionary<string, AudioClip>();
     private ObjectPool sfxPool;
+
+	protected override void Awake()
+	{
+		base.Awake();
+		Initialize();
+	}
 
 	private void Initialize()
 	{

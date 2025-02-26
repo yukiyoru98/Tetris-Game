@@ -1,32 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    // Singleton
-    private static GameManager instance;
-    public static GameManager Instance
-    {
-        get { return instance; }
-        private set { instance = value; }
-    }
-    private void Awake()
-    {
-        if(Instance != null && Instance != this)
-        {
-            Debug.LogError("Duplicated Singleton.");
-            Destroy(Instance);
-            return;
-        }
-		Instance = this;
-    }
-
     [SerializeField] private TetrominoBlock[] TetrominoPrefabs;
     [SerializeField] private TetrominoBlock GhostPrefab;
 
