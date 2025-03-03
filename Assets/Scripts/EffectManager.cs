@@ -31,7 +31,7 @@ public sealed class EffectManager : Singleton<EffectManager>
     {
         ParticleSystem effect = killLineEffectPool.GetFromPool().GetComponent<ParticleSystem>();
 		effect.transform.position = pos;
-		StartCoroutine(EffectReturnToPool(effect, hitEffectPool));
+		StartCoroutine(EffectReturnToPool(effect, killLineEffectPool));
 	}
 
 	private IEnumerator EffectReturnToPool(ParticleSystem effect, ObjectPool pool)

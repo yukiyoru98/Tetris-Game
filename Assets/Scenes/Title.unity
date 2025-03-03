@@ -1800,7 +1800,7 @@ GameObject:
   - component: {fileID: 603900627}
   - component: {fileID: 603900630}
   m_Layer: 5
-  m_Name: HowToPlay
+  m_Name: HowToPlayPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1905,7 +1905,7 @@ MonoBehaviour:
   NextBtn: {fileID: 278790183}
   PageNumText: {fileID: 33424998}
   PageTitleText: {fileID: 38805036}
-  Anim: {fileID: 603900627}
+  InstructionAnimation: {fileID: 603900627}
 --- !u!1 &635735691
 GameObject:
   m_ObjectHideFlags: 0

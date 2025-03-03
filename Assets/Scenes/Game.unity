@@ -1008,7 +1008,6 @@ GameObject:
   - component: {fileID: 828442592}
   - component: {fileID: 828442594}
   - component: {fileID: 828442593}
-  - component: {fileID: 828442595}
   m_Layer: 5
   m_Name: Score
   m_TagString: Untagged
@@ -1076,19 +1075,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828442591}
   m_CullTransparentMesh: 1
---- !u!114 &828442595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 828442591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72f7ca999fc097840b03bb44ad477c6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ScoreText: {fileID: 2049128933}
 --- !u!1 &859685396
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,11 +1196,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameEndWindow: {fileID: 1402727558}
   SpeedUpTextAnimation: {fileID: 4191212397993337096}
-  ScoreUI: {fileID: 828442595}
   ElapsedTimeFromStartText: {fileID: 1415838732}
-  Title: {fileID: 1902897385}
-  Score: {fileID: 292476320}
-  Level: {fileID: 689778318}
+  ScoreText: {fileID: 2049128933}
+  LevelText: {fileID: 689778318}
+  GameEnd_TitleText: {fileID: 1902897385}
+  GameEnd_ScoreText: {fileID: 292476320}
 --- !u!1 &862779375
 GameObject:
   m_ObjectHideFlags: 0

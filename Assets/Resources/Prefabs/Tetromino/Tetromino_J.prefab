@@ -49,9 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 6
-  Rotate_pivot: {x: 1.5, y: -1.5, z: 0}
   RotatePivot: {x: 1.5, y: -1.5, z: 0}
-  RotationIdx: 0
 --- !u!1001 &45086195180007303
 PrefabInstance:
   m_ObjectHideFlags: 0

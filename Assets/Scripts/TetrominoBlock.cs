@@ -8,7 +8,7 @@ public class TetrominoBlock : MonoBehaviour
 {
 	[SerializeField] private TetrominoType Type;
 	[SerializeField] private Vector3 RotatePivot;
-	
+
 	private int rotationIdx = 0;
 
 	public int X
@@ -48,9 +48,9 @@ public class TetrominoBlock : MonoBehaviour
 			case TetrominoType.O:
 				return true;
 			case TetrominoType.I:
-				return TryKick(grid, width, height, WallKickData.WallKick_I);
+				return TryKick(grid, width, height, WallKickData.WALL_KICK_I);
 			default:
-				return TryKick(grid, width, height, WallKickData.WallKick_LSTJZ);
+				return TryKick(grid, width, height, WallKickData.WALL_KICK_LSTJZ);
 		}
 	}
 
@@ -95,7 +95,7 @@ public class TetrominoBlock : MonoBehaviour
 		return true;
 	}
 
-	public void AddTetrominoToGrid(Transform[,] grid)
+	public void AddToGrid(Transform[,] grid)
 	{
 		foreach (Transform child in transform)
 		{
@@ -107,19 +107,26 @@ public class TetrominoBlock : MonoBehaviour
 
 	public void Hit()
 	{
-		float bottomPos = 100f;
+		float bottomPos = Mathf.Infinity;
+
+		// Shake each child Tile and find the lowest tile's y position
 		foreach (Transform child in transform)
 		{
-			Tile t = child.GetComponent<Tile>();
-			StartCoroutine(t.Shake());
+			Tile tile = child.GetComponent<Tile>();
+			tile.Shake();
 			int y_int = Mathf.RoundToInt(child.position.y);
-			int x_int = Mathf.RoundToInt(child.position.x);
 			if (y_int < bottomPos)
 			{
 				bottomPos = y_int;
 			}
 		}
-		EffectManager.Instance.ShowHitEffect(new Vector3(transform.TransformPoint(RotatePivot).x, bottomPos - 0.5f, 0));
+
+		// Calculate position to spawn hit effect
+		bottomPos -= Tile.TILE_HEIGHT * 0.5f;
+		float pivotWorldPosX = transform.TransformPoint(RotatePivot).x;
+		Vector3 hitEffectPos = new Vector3(pivotWorldPosX, bottomPos, 0);
+
+		EffectManager.Instance.ShowHitEffect(hitEffectPos);
 		SFXPlayer.Instance.PlaySFX("Hit");
 	}
 

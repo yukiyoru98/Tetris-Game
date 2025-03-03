@@ -24,32 +24,33 @@ public class GameManager : Singleton<GameManager>
     private const float MAX_GAME_TIME = 60f;
 
 	private const int SPEED_UP_SCORE_INTERVAL = 400;
+	private const int MAX_SPEED_LEVEL = 4;
 	private const int SCORE_PER_LINE = 100;
 
     private float tetrominoDropSpeedMultiplier = 1f;
     private int speedLevel = 1;
-    private float gameElapsedTime;
-    private int score;
+    private float _gameElapsedTime;
+    private int _score;
     private int nextSpeedUpScore;
 
     public int Score
     {
-        get => score;
+        get => _score;
         private set
         {
-            score = value;
-            OnScoreChanged?.Invoke(score);
+            _score = value;
+            OnScoreChanged?.Invoke(_score);
         }
 	}
 
 	private float GameElapsedTime
     {
-        get => gameElapsedTime;
+        get => _gameElapsedTime;
 
         set
         {
-            gameElapsedTime = value;
-            OnGameElapsedTimeChanged?.Invoke(gameElapsedTime);
+            _gameElapsedTime = value;
+            OnGameElapsedTimeChanged?.Invoke(_gameElapsedTime);
         }
     }
 
@@ -85,7 +86,7 @@ public class GameManager : Singleton<GameManager>
             tetrominoElapsedTime += Time.deltaTime;
 
             bool didTetrominoHit;
-			HandleInput(grid, tetromino, out didTetrominoHit);
+			HandleMovementInput(grid, tetromino, out didTetrominoHit);
 
             // Move tetromino down if reached drop time
 			if (tetrominoElapsedTime >= (TETROMINO_DROP_TIME_INTERVAL * tetrominoDropSpeedMultiplier))
@@ -114,11 +115,11 @@ public class GameManager : Singleton<GameManager>
 
         // GameOver
         yield return new WaitForSeconds(1f);
-        OnGameEnded?.Invoke(isGameOver, score);
+        OnGameEnded?.Invoke(isGameOver, _score);
 
 	}
 
-    private void HandleInput(Transform[,] grid, TetrominoBlock tetromino, out bool didTetrominoHit)
+    private void HandleMovementInput(Transform[,] grid, TetrominoBlock tetromino, out bool didTetrominoHit)
     {
         didTetrominoHit = false;
 
@@ -171,7 +172,7 @@ public class GameManager : Singleton<GameManager>
         return tetromino;
     }
 
-    private static void GhostFollow(Transform[,] grid, TetrominoBlock ghost, TetrominoBlock followed)
+    private void GhostFollow(Transform[,] grid, TetrominoBlock ghost, TetrominoBlock followed)
     {
         ghost.X = followed.X;
         ghost.Y = followed.Y;
@@ -187,7 +188,7 @@ public class GameManager : Singleton<GameManager>
         ghost.Y++;
     }
 
-    private static void RotateTetromino(Transform[,] grid, TetrominoBlock tetromino)
+    private void RotateTetromino(Transform[,] grid, TetrominoBlock tetromino)
     {
         tetromino.Rotate();
         if (!tetromino.TestWallKick(grid, WIDTH, HEIGHT))
@@ -195,7 +196,7 @@ public class GameManager : Singleton<GameManager>
             tetromino.Rotate();
         }
     }
-    private static void MoveTetrominoLeft(Transform[,] grid, TetrominoBlock tetromino)
+    private void MoveTetrominoLeft(Transform[,] grid, TetrominoBlock tetromino)
     {
         tetromino.X--;
         if (!tetromino.ValidMove(grid, WIDTH, HEIGHT))
@@ -203,7 +204,7 @@ public class GameManager : Singleton<GameManager>
             tetromino.X++;
         }
     }
-    private static void MoveTetrominoRight(Transform[,] grid, TetrominoBlock tetromino)
+    private void MoveTetrominoRight(Transform[,] grid, TetrominoBlock tetromino)
     {
         tetromino.X++;
         if (!tetromino.ValidMove(grid, WIDTH, HEIGHT))
@@ -212,7 +213,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-	private static bool MoveTetrominoDown(Transform[,] grid, TetrominoBlock tetromino)
+	private bool MoveTetrominoDown(Transform[,] grid, TetrominoBlock tetromino)
     {
         tetromino.Y--;
         if (tetromino.ValidMove(grid, WIDTH, HEIGHT))
@@ -222,12 +223,12 @@ public class GameManager : Singleton<GameManager>
         tetromino.Y++;
 
         tetromino.Hit();
-        tetromino.AddTetrominoToGrid(grid);
+        tetromino.AddToGrid(grid);
 
         return false; // cannot move down, so tetromino hit
 	}
     
-    private static void HardDrop(Transform[,] grid, TetrominoBlock tetromino)
+    private void HardDrop(Transform[,] grid, TetrominoBlock tetromino)
     {
         while (MoveTetrominoDown(grid, tetromino))
         {
@@ -256,7 +257,7 @@ public class GameManager : Singleton<GameManager>
 		}
 	}
 
-    public static bool HasLine(int row, Transform[,] grid)
+    public bool HasLine(int row, Transform[,] grid)
     {
         for (int i = 0; i < WIDTH; i++)
         {
@@ -265,7 +266,7 @@ public class GameManager : Singleton<GameManager>
         return true;
     }
 
-    public static void RemoveLineTiles(int row, Transform[,] grid)
+    public void RemoveLineTiles(int row, Transform[,] grid)
     {
         for (int j = 0; j < WIDTH; j++)
         {
@@ -274,7 +275,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public static void RowDown(int row, Transform[,] grid)
+    public void RowDown(int row, Transform[,] grid)
     {
         for (int i = row; i < HEIGHT; i++)
         {
@@ -293,7 +294,7 @@ public class GameManager : Singleton<GameManager>
 	public void AddScore(int lines)
 	{
 		Score += SCORE_PER_LINE * lines;
-        while (speedLevel < 4 && Score >= nextSpeedUpScore)
+        while (speedLevel < MAX_SPEED_LEVEL && Score >= nextSpeedUpScore)
 		{
 			SpeedUp();
 		}

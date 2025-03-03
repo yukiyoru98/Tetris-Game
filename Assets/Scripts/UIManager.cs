@@ -3,17 +3,31 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private GameObject GameEndWindow;
+	[SerializeField] private GameObject GameEndWindow;
 	[SerializeField] private Animation SpeedUpTextAnimation;
-    [SerializeField] private ScoreUI ScoreUI;
-    [SerializeField] private Text ElapsedTimeFromStartText;
-    [SerializeField] private Text Title;
-    [SerializeField] private Text Score;
-	[SerializeField] private Text Level;
+	[SerializeField] private Text ElapsedTimeFromStartText;
+	[SerializeField] private Text ScoreText;
+	[SerializeField] private Text LevelText;
+	[SerializeField] private Text GameEnd_TitleText;
+	[SerializeField] private Text GameEnd_ScoreText;
 
+	#region UI Functions
+	public void PlayAgainBtn()
+	{
+		GameManager.Instance.Restart();
+	}
+
+	public void BackToTitleBtn()
+	{
+		GameManager.Instance.BackToTitle();
+	}
+	#endregion
+
+	#region Private Functions
 	private void OnEnable()
 	{
 		GameManager.Instance.OnGameElapsedTimeChanged += GameManager_OnElapsedTimeFromStartChanged;
+		GameManager.Instance.OnScoreChanged += GameManager_OnScoreChanged;
 		GameManager.Instance.OnSpeedUp += GameManager_OnSpeedUp;
 		GameManager.Instance.OnGameEnded += GameManager_OnGameEnded;
 	}
@@ -21,6 +35,7 @@ public class UIManager : MonoBehaviour
 	private void OnDisable()
 	{
 		GameManager.Instance.OnGameElapsedTimeChanged -= GameManager_OnElapsedTimeFromStartChanged;
+		GameManager.Instance.OnScoreChanged -= GameManager_OnScoreChanged;
 		GameManager.Instance.OnSpeedUp -= GameManager_OnSpeedUp;
 		GameManager.Instance.OnGameEnded -= GameManager_OnGameEnded;
 	}
@@ -30,36 +45,32 @@ public class UIManager : MonoBehaviour
 		ElapsedTimeFromStartText.text = elapsedTimeFromStart.ToString("F2");
 	}
 
-    private void GameManager_OnSpeedUp(int speedLevel)
-    {
-        ShowSpeedUp();
-        SetLevelText(speedLevel);
-    }
+	private void GameManager_OnSpeedUp(int speedLevel)
+	{
+		ShowSpeedUp();
+		SetLevelText(speedLevel);
+	}
+
+	public void GameManager_OnScoreChanged(int score)
+	{
+		ScoreText.text = score.ToString();
+	}
 
 	private void GameManager_OnGameEnded(bool isGameOver, int score)
 	{
 		GameEndWindow.SetActive(true);
-		Title.text = isGameOver ? "Game Over" : "Time's Up";
-		Score.text = $"SCORE : {score}";
+		GameEnd_TitleText.text = isGameOver ? "Game Over" : "Time's Up";
+		GameEnd_ScoreText.text = $"SCORE : {score}";
 	}
 
 	private void SetLevelText(int level)
-    {
-        Level.text = level.ToString();
-    }
+	{
+		LevelText.text = level.ToString();
+	}
 
-    private void ShowSpeedUp()
-    {
-        SpeedUpTextAnimation.Play();
-    }
-
-    public void PlayAgainBtn()
-    {
-        GameManager.Instance.Restart();
-    }
-
-    public void BackToTitleBtn()
-    {
-        GameManager.Instance.BackToTitle();
-    }
+	private void ShowSpeedUp()
+	{
+		SpeedUpTextAnimation.Play();
+	}
+	#endregion
 }

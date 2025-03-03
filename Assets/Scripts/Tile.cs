@@ -1,54 +1,76 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class Tile : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer _spriteRenderer;
+	[SerializeField] private Transform TileVisual;
 
-    //[SerializeField] private ParticleSystem _hitEffect;
+	public const float TILE_HEIGHT = 1.0f;
 
-    //[SerializeField] private AudioSource _hitSource;
-    public void Kill()
-    {
-        StartCoroutine(FadeOut());
-    }
-    public IEnumerator FadeOut()
-    {
-        float diff = 0.1f;
-        while (_spriteRenderer.color.a > 0)
-        {
-           Color tmpColor = _spriteRenderer.color;
-            tmpColor.a -= diff;
-            if (tmpColor.a < 0) tmpColor.a = 0;
-            _spriteRenderer.color = tmpColor;
-            yield return null;
-        }
-        Destroy(gameObject);
-    }
+	private const float FADE_OUT_RATE = 0.1f;
+	private const float SHAKE_POWER = 0.05f;
+	private const float SHAKE_DURATION = 0.3f;
 
-    public IEnumerator Shake()
-    {
-        var beginTime = Time.realtimeSinceStartup;
-        var beginY = _spriteRenderer.transform.localPosition.y;
-        var endTime = beginTime + 0.3f;
+	private void Awake()
+	{
+		if (TileVisual == null)
+		{
+			Debug.LogError($"TileVisual reference must be set in inspector.");
+		}
+	}
 
-        var spriteTransform = _spriteRenderer.transform;
+	public void Kill()
+	{
+		StartCoroutine(KillCoroutine());
+	}
 
-        while (Time.realtimeSinceStartup < endTime && spriteTransform)
-        {
-            var diffTime = endTime - Time.realtimeSinceStartup;
-            var range = 0.05f * diffTime;
-            var pos = spriteTransform.localPosition;
-            pos.y = beginY + Random.Range(-range, range);
-            spriteTransform.localPosition = pos;
-            yield return null;
-        }
-        if(spriteTransform)
-        {
-            var pos = spriteTransform.localPosition;
-            pos.y = beginY;
-            spriteTransform.localPosition = pos;
-        }
+	private IEnumerator KillCoroutine()
+	{
+		if (TileVisual.TryGetComponent(out SpriteRenderer tileSprite))
+		{
+			while (tileSprite.color.a > 0)
+			{
+				Color tmpColor = tileSprite.color;
+				tmpColor.a -= FADE_OUT_RATE;
+				if (tmpColor.a < 0)
+				{
+					tmpColor.a = 0;
+				}
+				tileSprite.color = tmpColor;
+				yield return null;
+			}
+		}
 
-    }
+		Destroy(gameObject);
+	}
+
+	public void Shake()
+	{
+		StartCoroutine(ShakeCoroutine());
+	}
+
+	private IEnumerator ShakeCoroutine()
+	{
+		Vector3 startPos = TileVisual.localPosition;
+
+		float beginTime = Time.time;
+		float endTime = beginTime + SHAKE_DURATION;
+
+		while (Time.time < endTime && TileVisual) // TileVisual becomes null if tile is killed
+		{
+			float dTime = endTime - Time.time;
+			float shakeRange = SHAKE_POWER * dTime;
+			Vector3 newPos = TileVisual.transform.localPosition;
+			newPos.y = startPos.y + Random.Range(-shakeRange, shakeRange);
+			TileVisual.transform.localPosition = newPos;
+			yield return null;
+		}
+
+		if(TileVisual) // check existence in case tile is killed
+		{
+			TileVisual.transform.localPosition = startPos;
+		}
+
+	}
 }

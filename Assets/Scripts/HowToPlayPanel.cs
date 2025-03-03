@@ -7,7 +7,7 @@ public class HowToPlayPanel : MonoBehaviour
 {
     [SerializeField] private Button PrevBtn, NextBtn;
     [SerializeField] private TextMeshProUGUI PageNumText, PageTitleText;
-    [SerializeField] private Animation Anim;
+    [SerializeField] private Animation InstructionAnimation;
 
     private int currentPageIndex = 0;
     private readonly PageInfo[] PAGE_INFOs = {
@@ -70,7 +70,7 @@ public class HowToPlayPanel : MonoBehaviour
 
 	private void UpdateAnimationClip(int page)
 	{
-        Anim.Play(PAGE_INFOs[page].AnimationClipName);
+        InstructionAnimation.Play(PAGE_INFOs[page].AnimationClipName);
 	}
 	#endregion
 
