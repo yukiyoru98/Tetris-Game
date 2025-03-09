@@ -11,10 +11,10 @@ public class GameManager : Singleton<GameManager>
 
     public event Action<int> OnScoreChanged; // int score
     public event Action<int> OnSpeedUp; // int speedLevel
-	public event Action<float> OnGameElapsedTimeChanged; // float GameElapsedTime
-	public event Action<bool, int> OnGameEnded; // bool isGameOver, int score
+    public event Action<float> OnGameElapsedTimeChanged; // float GameElapsedTime
+    public event Action<bool, int> OnGameEnded; // bool isGameOver, int score
 
-	private const int WIDTH = 10;
+    private const int WIDTH = 10;
     private const int HEIGHT = 20;
 
     private const int SPAWN_X = WIDTH / 2 - 1;
@@ -23,9 +23,9 @@ public class GameManager : Singleton<GameManager>
     private const float TETROMINO_DROP_TIME_INTERVAL = 0.3f;
     private const float MAX_GAME_TIME = 60f;
 
-	private const int SPEED_UP_SCORE_INTERVAL = 400;
-	private const int MAX_SPEED_LEVEL = 4;
-	private const int SCORE_PER_LINE = 100;
+    private const int SPEED_UP_SCORE_INTERVAL = 400;
+    private const int MAX_SPEED_LEVEL = 4;
+    private const int SCORE_PER_LINE = 100;
 
     private float tetrominoDropSpeedMultiplier = 1f;
     private int speedLevel = 1;
@@ -41,9 +41,9 @@ public class GameManager : Singleton<GameManager>
             _score = value;
             OnScoreChanged?.Invoke(_score);
         }
-	}
+    }
 
-	private float GameElapsedTime
+    private float GameElapsedTime
     {
         get => _gameElapsedTime;
 
@@ -57,13 +57,13 @@ public class GameManager : Singleton<GameManager>
     private IEnumerator Start()
     {
         // Initial setup
-		GameElapsedTime = 0f;
-		tetrominoDropSpeedMultiplier = 1f;
-		speedLevel = 1;
-		Score = 0;
-		nextSpeedUpScore = SPEED_UP_SCORE_INTERVAL;
+        GameElapsedTime = 0f;
+        tetrominoDropSpeedMultiplier = 1f;
+        speedLevel = 1;
+        Score = 0;
+        nextSpeedUpScore = SPEED_UP_SCORE_INTERVAL;
 
-		while (true)
+        while (true)
         {
             yield return PlayGame();
             break;
@@ -75,83 +75,83 @@ public class GameManager : Singleton<GameManager>
     {
         Transform[,] grid = new Transform[WIDTH, HEIGHT];
         TetrominoBlock tetromino = CreateNewTetromino(grid);
-		TetrominoBlock ghostTetromino = Instantiate(GhostPrefab);
+        TetrominoBlock ghostTetromino = Instantiate(GhostPrefab);
         float tetrominoElapsedTime = 0f;
         bool isGameOver = false;
 
-		while (GameElapsedTime <= MAX_GAME_TIME)
+        while (GameElapsedTime <= MAX_GAME_TIME)
         {
             GhostFollow(grid, ghostTetromino, tetromino);
             GameElapsedTime += Time.deltaTime;
             tetrominoElapsedTime += Time.deltaTime;
 
             bool didTetrominoHit;
-			HandleMovementInput(grid, tetromino, out didTetrominoHit);
+            HandleMovementInput(grid, tetromino, out didTetrominoHit);
 
             // Move tetromino down if reached drop time
-			if (tetrominoElapsedTime >= (TETROMINO_DROP_TIME_INTERVAL * tetrominoDropSpeedMultiplier))
+            if (tetrominoElapsedTime >= (TETROMINO_DROP_TIME_INTERVAL * tetrominoDropSpeedMultiplier))
             {
                 if (!MoveTetrominoDown(grid, tetromino))
                 {
                     didTetrominoHit |= true;
                 }
-                tetrominoElapsedTime = 0; 
+                tetrominoElapsedTime = 0;
             }
 
-            if(didTetrominoHit)
+            if (didTetrominoHit)
             {
                 KillLines(grid);
-				tetromino = CreateNewTetromino(grid);
+                tetromino = CreateNewTetromino(grid);
 
-				if (tetromino == null) // cannot create new tetromino, meaning that the board is full
-				{
-					isGameOver = true;
-					break;
-				}
-			}
+                if (tetromino == null) // cannot create new tetromino, meaning that the board is full
+                {
+                    isGameOver = true;
+                    break;
+                }
+            }
 
-			yield return null;
+            yield return null;
         }
 
         // GameOver
         yield return new WaitForSeconds(1f);
         OnGameEnded?.Invoke(isGameOver, _score);
 
-	}
+    }
 
     private void HandleMovementInput(Transform[,] grid, TetrominoBlock tetromino, out bool didTetrominoHit)
     {
         didTetrominoHit = false;
 
-		if (Input.GetKeyDown(KeyCode.LeftArrow))
-		{
-			MoveTetrominoLeft(grid, tetromino);
-		}
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            MoveTetrominoLeft(grid, tetromino);
+        }
 
-		if (Input.GetKeyDown(KeyCode.RightArrow))
-		{
-			MoveTetrominoRight(grid, tetromino);
-		}
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            MoveTetrominoRight(grid, tetromino);
+        }
 
-		if (Input.GetKeyDown(KeyCode.UpArrow))
-		{
-			RotateTetromino(grid, tetromino);
-		}
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            RotateTetromino(grid, tetromino);
+        }
 
-		if (Input.GetKeyDown(KeyCode.DownArrow))
-		{
-			if (!MoveTetrominoDown(grid, tetromino))
-			{
-				didTetrominoHit = true;
-			}
-		}
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (!MoveTetrominoDown(grid, tetromino))
+            {
+                didTetrominoHit = true;
+            }
+        }
 
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			HardDrop(grid, tetromino);
-			didTetrominoHit = true;
-		}
-	}
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            HardDrop(grid, tetromino);
+            didTetrominoHit = true;
+        }
+    }
 
     public void Restart()
     {
@@ -168,7 +168,8 @@ public class GameManager : Singleton<GameManager>
         TetrominoBlock tetromino = Instantiate(TetrominoPrefabs[Random.Range(0, TetrominoPrefabs.Length)]);
         tetromino.X = SPAWN_X;
         tetromino.Y = SPAWN_Y;
-        if (!tetromino.ValidMove(grid, WIDTH, HEIGHT)) return null;
+        if (!tetromino.ValidMove(grid, WIDTH, HEIGHT))
+            return null;
         return tetromino;
     }
 
@@ -176,9 +177,9 @@ public class GameManager : Singleton<GameManager>
     {
         ghost.X = followed.X;
         ghost.Y = followed.Y;
-        for(int i=0; i<followed.transform.childCount; i++)
+        for (int i = 0; i < followed.transform.childCount; i++)
         {
-            ghost.transform.GetChild(i).position =  followed.transform.GetChild(i).position;
+            ghost.transform.GetChild(i).position = followed.transform.GetChild(i).position;
         }
 
         while (ghost.ValidMove(grid, WIDTH, HEIGHT))
@@ -213,7 +214,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-	private bool MoveTetrominoDown(Transform[,] grid, TetrominoBlock tetromino)
+    private bool MoveTetrominoDown(Transform[,] grid, TetrominoBlock tetromino)
     {
         tetromino.Y--;
         if (tetromino.ValidMove(grid, WIDTH, HEIGHT))
@@ -226,8 +227,8 @@ public class GameManager : Singleton<GameManager>
         tetromino.AddToGrid(grid);
 
         return false; // cannot move down, so tetromino hit
-	}
-    
+    }
+
     private void HardDrop(Transform[,] grid, TetrominoBlock tetromino)
     {
         while (MoveTetrominoDown(grid, tetromino))
@@ -245,23 +246,24 @@ public class GameManager : Singleton<GameManager>
             {
                 RemoveLineTiles(row, grid);
                 RowDown(row, grid);
-			    EffectManager.Instance.ShowKillLineEffect(new Vector3(SPAWN_X + 1, row - 0.5f, 0));
-				killedLines++;
+                EffectManager.Instance.ShowKillLineEffect(new Vector3(SPAWN_X + 1, row - 0.5f, 0));
+                killedLines++;
             }
         }
 
         if (killedLines > 0)
         {
             SFXPlayer.Instance.PlaySFX("KillLine");
-			AddScore(killedLines);
-		}
-	}
+            AddScore(killedLines);
+        }
+    }
 
     public bool HasLine(int row, Transform[,] grid)
     {
         for (int i = 0; i < WIDTH; i++)
         {
-            if (grid[i, row] == null) return false;
+            if (grid[i, row] == null)
+                return false;
         }
         return true;
     }
@@ -290,22 +292,22 @@ public class GameManager : Singleton<GameManager>
             }
         }
     }
-	
-	public void AddScore(int lines)
-	{
-		Score += SCORE_PER_LINE * lines;
+
+    public void AddScore(int lines)
+    {
+        Score += SCORE_PER_LINE * lines;
         while (speedLevel < MAX_SPEED_LEVEL && Score >= nextSpeedUpScore)
-		{
-			SpeedUp();
-		}
-	}
-	
+        {
+            SpeedUp();
+        }
+    }
+
     public void SpeedUp()
     {
-		speedLevel++;
-		nextSpeedUpScore += SPEED_UP_SCORE_INTERVAL;
-		tetrominoDropSpeedMultiplier -= 0.2f;
+        speedLevel++;
+        nextSpeedUpScore += SPEED_UP_SCORE_INTERVAL;
+        tetrominoDropSpeedMultiplier -= 0.2f;
 
         OnSpeedUp?.Invoke(speedLevel);
-	}
+    }
 }

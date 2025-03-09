@@ -7,7 +7,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
         get
         {
-            if(instance == null)
+            if (instance == null)
             {
                 instance = new GameObject(typeof(T).Name).AddComponent<T>();
             }
@@ -15,14 +15,14 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
         }
     }
 
-	protected virtual void Awake()
-	{
-		if(instance != null && instance != this as T)
+    protected virtual void Awake()
+    {
+        if (instance != null && instance != this as T)
         {
             Debug.LogError($"Duplicated singleton instance of {typeof(T)}.");
             Destroy(this);
             return;
         }
         instance = this as T;
-	}
+    }
 }

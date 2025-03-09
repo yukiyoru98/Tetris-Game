@@ -15,76 +15,76 @@ public class HowToPlayPanel : MonoBehaviour
         new("ROTATE", "RotateAnimation"),
         new("HARD DROP", "HardDropAnimation")
     };
-    
 
-	#region UI Functions
-	public void CloseBtn()
+
+    #region UI Functions
+    public void CloseBtn()
     {
         gameObject.SetActive(false);
     }
-	public void NextPage()
-	{
-		SetPage(currentPageIndex + 1);
-	}
-
-	public void PrevPage()
-	{
-		SetPage(currentPageIndex - 1);
-	}
-	#endregion
-
-	#region Private Functions
-	private void Awake()
-	{
-		SetPage(0);
-	}
-
-	private void SetPage(int page)
+    public void NextPage()
     {
-		if(page < 0 || page >= PAGE_INFOs.Length)
+        SetPage(currentPageIndex + 1);
+    }
+
+    public void PrevPage()
+    {
+        SetPage(currentPageIndex - 1);
+    }
+    #endregion
+
+    #region Private Functions
+    private void Awake()
+    {
+        SetPage(0);
+    }
+
+    private void SetPage(int page)
+    {
+        if (page < 0 || page >= PAGE_INFOs.Length)
         {
             return;
         }
         currentPageIndex = page;
-		UpdatePageBtnImage(currentPageIndex);
-		UpdatePageText(currentPageIndex);
-		UpdateTitleText(currentPageIndex);
+        UpdatePageBtnImage(currentPageIndex);
+        UpdatePageText(currentPageIndex);
+        UpdateTitleText(currentPageIndex);
         UpdateAnimationClip(currentPageIndex);
-	}
+    }
 
-	private void UpdatePageBtnImage(int page)
-	{
-		PrevBtn.interactable = page != 0;
-		NextBtn.interactable = page != 2;
-	}
+    private void UpdatePageBtnImage(int page)
+    {
+        PrevBtn.interactable = page != 0;
+        NextBtn.interactable = page != 2;
+    }
 
-	private void UpdatePageText(int page)
+    private void UpdatePageText(int page)
     {
         PageNumText.text = $"{page + 1}/{PAGE_INFOs.Length}";
     }
 
-	private void UpdateTitleText(int page)
+    private void UpdateTitleText(int page)
     {
         PageTitleText.text = PAGE_INFOs[page].Title;
     }
 
-	private void UpdateAnimationClip(int page)
-	{
+    private void UpdateAnimationClip(int page)
+    {
         InstructionAnimation.Play(PAGE_INFOs[page].AnimationClipName);
-	}
-	#endregion
+    }
+    #endregion
 
 
-	private struct PageInfo
-	{
-		public string Title;
-		public string AnimationClipName;
+    private struct PageInfo
+    {
+        public string Title;
+        public string AnimationClipName;
 
-		public PageInfo(string title, string animationClipName)
-		{
-			Title = title;
-			AnimationClipName = animationClipName;
-		}
-	}
+        public PageInfo(string title, string animationClipName)
+        {
+            Title = title;
+            AnimationClipName = animationClipName;
+        }
+    }
 
 }

@@ -7,7 +7,7 @@ public class ObjectPool
     private GameObject prefab;
     private Transform parent;
 
-	public ObjectPool(GameObject prefab, int size, Transform parent = null)
+    public ObjectPool(GameObject prefab, int size, Transform parent = null)
     {
         this.prefab = prefab;
         this.parent = parent;
@@ -16,22 +16,22 @@ public class ObjectPool
 
     private void ExpandPool(int size)
     {
-        for(int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++)
         {
-			GameObject newObject = Object.Instantiate(prefab, parent);
+            GameObject newObject = Object.Instantiate(prefab, parent);
             newObject.SetActive(false);
-			pool.Enqueue(newObject);
+            pool.Enqueue(newObject);
         }
     }
 
     public GameObject GetFromPool()
     {
-        if(pool.Count == 0)
+        if (pool.Count == 0)
         {
             ExpandPool(1);
         }
 
-		GameObject poolObject = pool.Dequeue();
+        GameObject poolObject = pool.Dequeue();
         poolObject.SetActive(true);
         return poolObject;
     }
@@ -40,5 +40,5 @@ public class ObjectPool
     {
         poolObject.SetActive(false);
         pool.Enqueue(poolObject);
-	}
+    }
 }
